@@ -1,5 +1,5 @@
 """
-Module for evaluating results for the GenAI/LLM take-home test.
+Module for evaluating results for the Research Assistant Chatbot.
 """
 def evaluate(results):
     """

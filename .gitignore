@@ -1,6 +1,9 @@
 # Environment variables
 .env
 
+# GitHub Copilot instructions
+.github/
+
 # Python
 __pycache__/
 *.py[cod]

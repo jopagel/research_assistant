@@ -1,5 +1,5 @@
 """
-Module for preprocessing data for the GenAI/LLM take-home test.
+Module for preprocessing data for the Research Assistant Chatbot.
 """
 import re
 

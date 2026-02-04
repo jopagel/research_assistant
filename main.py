@@ -1,6 +1,6 @@
 # main.py
 """
-Entry point for the Research Assistant GenAI/LLM take-home test implementation.
+Entry point for the Research Assistant Chatbot with agentic workflow.
 """
 from modules.agent_framework import agentic_workflow
 

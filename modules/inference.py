@@ -1,5 +1,5 @@
 """
-Module for running model inference for the GenAI/LLM take-home test.
+Module for running model inference for the Research Assistant Chatbot.
 """
 def run_inference(processed_data):
     """

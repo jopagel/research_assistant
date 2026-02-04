@@ -1,5 +1,5 @@
 """
-Module for loading data for the GenAI/LLM take-home test.
+Module for loading data for the Research Assistant Chatbot.
 """
 def load_data():
     """
