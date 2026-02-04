@@ -1,0 +1,7 @@
+# requirements.txt
+# Required packages for Research Assistant Agentic Chatbot
+langchain
+huggingface_hub
+python-dotenv
+requests
+certifi
