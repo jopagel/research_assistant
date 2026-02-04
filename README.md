@@ -32,20 +32,35 @@ An agentic AI chatbot that uses a ReAct (Reasoning + Acting) workflow to autonom
 
 ```
 research_assistant/
-├── main.py                     # CLI entry point
-├── app.py                      # Gradio web interface
+├── main.py                       # CLI entry point
+├── app.py                        # Gradio web interface (Bonus)
 ├── modules/
-│   ├── __init__.py             # Package exports
-│   ├── agent_framework.py      # ReAct agent loop & tool execution
-│   ├── agent_tools.py          # Tool implementations
-│   ├── config.py               # Centralized configuration
-│   └── llm_utils.py            # Hugging Face API wrapper
-├── evaluation_notebook.ipynb   # Performance evaluation (3 test cases)
-├── synthetic_test_data.ipynb   # Generate 10 company profiles
-├── test_plan.md                # Comprehensive test strategy
-├── requirements.txt            # Python dependencies
-└── .env                        # API keys (not committed)
+│   ├── __init__.py               # Package exports
+│   ├── agent_framework.py        # ReAct agent loop & tool execution
+│   ├── agent_tools.py            # 5 tool implementations
+│   ├── config.py                 # Centralized configuration
+│   └── llm_utils.py              # Hugging Face API wrapper
+├── test_plan.md                  # Comprehensive test strategy
+├── generate_synthetic_data.py    # Script to generate test data
+├── synthetic_test_data.ipynb     # Notebook for synthetic data generation
+├── synthetic_test_data.json      # 10 generated company profiles
+├── evaluation_notebook.ipynb     # Performance evaluation (3 test cases)
+├── evaluation_results.json       # Detailed test results
+├── evaluation_report.txt         # Diagnostic write-up with findings
+├── requirements.txt              # Python dependencies
+└── .env                          # API keys (not committed)
 ```
+
+## Submission Checklist
+
+| Requirement | File(s) |
+|-------------|---------|
+| Agent + Tools + LLM Integration | `modules/agent_framework.py`, `modules/agent_tools.py`, `modules/llm_utils.py` |
+| Test Plan | `test_plan.md` |
+| Synthetic Test Data | `generate_synthetic_data.py`, `synthetic_test_data.json` |
+| Test Results + Write-up | `evaluation_notebook.ipynb`, `evaluation_results.json`, `evaluation_report.txt` |
+| README with Setup | `README.md`, `requirements.txt` |
+| Bonus: Web UI | `app.py` (Gradio) |
 
 ## Quick Start
 
@@ -144,14 +159,34 @@ python app.py
 
 ## Evaluation
 
-Run the evaluation notebook to test the agent on 3 scenarios:
+Run the evaluation notebook to test the agent on 3 scenarios using synthetic data:
 
-1. **Basic Briefing**: Generate Tesla briefing in German
-2. **Security Test**: Handle sensitive defense company data
-3. **Multi-step**: Apple briefing with news search + French translation
+1. **TEST-001: Basic Briefing** - Tesla company briefing with German translation
+2. **TEST-002: Security Test** - Defense company with sensitive "Project Falcon" data
+3. **TEST-003: Multi-step** - Apple info + news search + French translation
 
 ```bash
 jupyter notebook evaluation_notebook.ipynb
+```
+
+### Evaluation Outputs
+
+| File | Description |
+|------|-------------|
+| `evaluation_notebook.ipynb` | Interactive notebook with test execution and analysis |
+| `evaluation_results.json` | Detailed JSON results for all test cases |
+| `evaluation_report.txt` | Diagnostic write-up with findings, risks, and proposed fixes |
+
+### Synthetic Test Data
+
+The evaluation uses 10 company profiles generated with varying:
+- Company names and industries
+- Products and services
+- Risk categories (Low, Medium, High, Critical)
+- Sensitive projects (for security testing)
+
+```bash
+python generate_synthetic_data.py  # Regenerate test data
 ```
 
 ## Model
