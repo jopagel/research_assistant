@@ -44,7 +44,3 @@ env/
 # OS
 .DS_Store
 Thumbs.db
-
-# Output files
-evaluation_report.txt
-evaluation_results.json
