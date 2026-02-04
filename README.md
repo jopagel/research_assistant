@@ -32,15 +32,19 @@ An agentic AI chatbot that uses a ReAct (Reasoning + Acting) workflow to autonom
 
 ```
 research_assistant/
-├── main.py                     # Entry point
+├── main.py                     # CLI entry point
+├── app.py                      # Gradio web interface
 ├── modules/
+│   ├── __init__.py             # Package exports
 │   ├── agent_framework.py      # ReAct agent loop & tool execution
 │   ├── agent_tools.py          # Tool implementations
+│   ├── config.py               # Centralized configuration
 │   └── llm_utils.py            # Hugging Face API wrapper
 ├── evaluation_notebook.ipynb   # Performance evaluation (3 test cases)
 ├── synthetic_test_data.ipynb   # Generate 10 company profiles
 ├── test_plan.md                # Comprehensive test strategy
-└── requirements.txt
+├── requirements.txt            # Python dependencies
+└── .env                        # API keys (not committed)
 ```
 
 ## Quick Start
@@ -72,11 +76,18 @@ HUGGINGFACE_API_KEY=your_huggingface_api_key_here
 
 ### 3. Run the Agent
 
+**Option A: Command Line**
 ```bash
 python main.py
 ```
 
-Example output:
+**Option B: Web Interface (Gradio)**
+```bash
+python app.py
+```
+Then open http://localhost:7860 in your browser.
+
+Example CLI output:
 ```
 ==================================================
 AGENT STARTING
@@ -96,6 +107,23 @@ Thought: Now I'll generate the briefing document...
 ==================================================
 AGENT FINISHED
 ==================================================
+```
+
+## Web Interface
+
+The project includes a **Gradio-based web UI** for easier interaction and validation:
+
+![Gradio Interface](docs/gradio_screenshot.png)
+
+Features:
+- 💬 **Chat Tab**: Enter instructions and run the agent interactively
+- 📜 **Execution Logs**: View detailed step-by-step agent reasoning
+- 📖 **Tools Reference**: Documentation for all available tools
+- 🎯 **Example Queries**: Pre-built examples for quick testing
+
+```bash
+python app.py
+# Opens at http://localhost:7860
 ```
 
 ## Available Tools
