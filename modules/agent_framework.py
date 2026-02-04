@@ -197,41 +197,40 @@ def execute_tool(tool_name: str, tool_input: str) -> str:
 
 def _build_prompt(instruction: str, tools_desc: str) -> str:
     """Build the ReAct prompt for the agent."""
-    return f"""You are a research assistant agent. Complete tasks efficiently with minimal steps.
+    return f"""You are a research assistant agent. Complete tasks step by step.
 
 AVAILABLE TOOLS:
 {tools_desc}
 
-FORMAT (use exactly):
-Thought: [brief reasoning]
+RESPONSE FORMAT - Use exactly ONE of these formats per response:
+
+Option 1 - Call a tool:
+Thought: [your reasoning]
 Action: [tool_name]
-Action Input: [input - use JSON for multi-param tools: {{"key": "value"}}]
+Action Input: [input]
 
-For final response:
-Thought: I have all the information needed.
-Final Answer: [complete answer]
+Option 2 - Give final answer (when you have gathered enough information):
+Thought: I have gathered the information. Now I will provide the final answer.
+Final Answer: [your complete response to the user]
 
-EFFICIENCY RULES:
-- Use ONLY 1 action per response, then STOP
-- Aim to complete in 2-4 steps total
-- For company briefings: 1) get_company_info 2) generate_document or translate_document 3) Final Answer
-- For translations: Pass full document content to translate_document
-- When you have enough info, immediately give Final Answer
+IMPORTANT RULES:
+1. Use ONLY ONE action per response
+2. After receiving an Observation, you MUST either call another tool OR give Final Answer
+3. Do NOT repeat the same tool call with the same input
+4. After 2-3 tool calls, you should have enough information to give Final Answer
+5. For simple requests like "give me a summary about X", call get_company_info ONCE, then give Final Answer
 
-EXAMPLE - "Generate a briefing on Tesla":
-Thought: I need company info first.
+EXAMPLE - "Give me a summary about Tesla":
+Thought: I need to get company information about Tesla.
 Action: get_company_info
 Action Input: Tesla
 
-[After receiving observation]
-Thought: I have the info. Now I'll create the briefing document.
-Action: generate_document
-Action Input: {{"template": "briefing", "content_dict": {{"company_name": "Tesla", "industry": "EVs"}}}}
+[You will receive an Observation with the company data]
 
-[After receiving observation]
-Thought: I have all the information needed.
-Final Answer: [the generated briefing]
+Thought: I have gathered the information. Now I will provide the final answer.
+Final Answer: Tesla is an Electric Vehicles & Clean Energy company founded in 2003. The CEO is Elon Musk and headquarters are in Austin, Texas. Products include Model S, Model 3, Model X, Model Y, and Cybertruck.
 
+Now complete this task:
 Question: {instruction}
 Thought:"""
 
@@ -264,6 +263,9 @@ def agentic_workflow(
     react_prompt = _build_prompt(instruction, tools_desc)
     scratchpad = ""
     
+    # Track previous actions to detect loops
+    previous_actions: list[tuple[str, str]] = []
+    
     if verbose:
         print("\n" + "="*50)
         print("AGENT STARTING")
@@ -289,6 +291,22 @@ def agentic_workflow(
         elif parsed["type"] == "action":
             action = parsed["action"]
             action_input = parsed["input"]
+            
+            # Detect if we're in a loop (same action+input repeated)
+            current_action = (action, action_input)
+            if current_action in previous_actions:
+                if verbose:
+                    print(f"\n⚠️ Loop detected: {action}({action_input}) already called")
+                    print("Forcing completion with gathered information...")
+                
+                # Force completion - compile observations into final answer
+                observations = re.findall(r"Observation: (.+?)(?=\n\nThought:|$)", scratchpad, re.DOTALL)
+                if observations:
+                    combined = "\n".join(obs.strip() for obs in observations)
+                    return f"Based on the gathered information:\n\n{combined}"
+                return "Unable to complete task - agent entered loop with no useful observations."
+            
+            previous_actions.append(current_action)
             
             if verbose:
                 print(f"\nExecuting: {action}({action_input})")

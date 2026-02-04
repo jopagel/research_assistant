@@ -87,6 +87,12 @@ python app.py
 ```
 Then open http://localhost:7860 in your browser.
 
+**Option C: Mock Mode (for testing without API)**
+```bash
+USE_MOCK_LLM=true python main.py
+```
+This uses simulated LLM responses to test the agent logic without requiring API access.
+
 Example CLI output:
 ```
 ==================================================
